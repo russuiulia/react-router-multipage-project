@@ -1,0 +1,44 @@
+
+import { useEffect } from 'react'
+import QuoteList from '../components/quotes/QuoteList'
+import LoadingSpinner from '../components/UI/LoadingSpinner'
+import NoQuotesFound from '../components/quotes/NoQuotesFound'
+import useHttp from '../hooks/use-http'
+import { getAllQuotes } from '../lib/api'
+const AllQuotes = () => {
+  const quotes = [
+    { id: 'q1', author: 'Me', text: 'I think therefore i am' },
+    { id: 'q2', author: 'You', text: 'I drink therefore i see' }
+  ]
+  const { sendRequest, status, data: loadedQuotes, error } = useHttp(getAllQuotes, true);
+
+  useEffect(() => {
+    sendRequest();
+  }, [sendRequest])
+  console.log(loadedQuotes);
+  if (status === 'pending') {
+    return (<div className='centered'>
+      <LoadingSpinner />
+    </div>
+    );
+  }
+  if (error) {
+    return (
+      <p className='focused centered'>
+        An error occured.
+      </p>
+    );
+  }
+
+  if (status === 'completed' && (!loadedQuotes || loadedQuotes.length === 0)) {
+    return <NoQuotesFound />
+  }
+  return (
+
+    <QuoteList quotes={loadedQuotes} />
+
+
+  )
+}
+
+export default AllQuotes;
