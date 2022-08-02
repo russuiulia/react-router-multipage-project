@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route, Link, useRouteMatch, useHistory } from 'react-router-dom';
+import { Route, Link, useRouteMatch } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { Fragment } from 'react/cjs/react.production.min';
 import Comments from '../components/comments/Comments';
@@ -13,9 +13,10 @@ const QuoteDetail = () => {
 
   const { sendRequest, status, data: quote, error } = useHttp(getSingleQuote, true);
   const { quoteId } = params;
+
   useEffect(() => {
     sendRequest(quoteId);
-  }, [sendRequest])
+  }, [sendRequest, quoteId])
 
   if (status === 'pending') {
     return (<div className='centered'>
@@ -46,8 +47,6 @@ const QuoteDetail = () => {
       <Route path={`${match.path}/comments`}>
         <Comments />
       </Route>
-
-
     </Fragment>
   )
 }

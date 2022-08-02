@@ -26,6 +26,9 @@ const Comments = () => {
   if (status === 'pending') {
     comments = (<div className='centered'><LoadingSpinner /></div>);
   }
+  if (status === 'error') {
+    comments = (<div className='centered'>{error}</div>);
+  }
   if (status === 'completed' && (loadedComments || loadedComments.length > 0)) {
     comments = <CommentsList comments={loadedComments} />
   }
