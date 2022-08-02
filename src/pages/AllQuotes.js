@@ -15,7 +15,7 @@ const AllQuotes = () => {
   useEffect(() => {
     sendRequest();
   }, [sendRequest])
-  console.log(loadedQuotes);
+
   if (status === 'pending') {
     return (<div className='centered'>
       <LoadingSpinner />

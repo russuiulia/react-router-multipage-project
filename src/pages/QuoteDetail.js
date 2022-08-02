@@ -1,19 +1,37 @@
-import { Route, Link, useRouteMatch } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, Link, useRouteMatch, useHistory } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { Fragment } from 'react/cjs/react.production.min';
 import Comments from '../components/comments/Comments';
 import HighlightedQuote from '../components/quotes/HighlightedQuote'
+import LoadingSpinner from '../components/UI/LoadingSpinner';
+import useHttp from '../hooks/use-http';
+import { getSingleQuote } from '../lib/api';
 const QuoteDetail = () => {
   const params = useParams();
   const match = useRouteMatch();
-  const quotes = [
-    { id: 'q1', author: 'Me', text: 'I think therefore i am' },
-    { id: 'q2', author: 'You', text: 'I drink therefore i see' }
-  ];
-  const quote = quotes.find(quote => quote.id === params.quoteId);
 
-  if (!quote) {
-    return <p>No quote found</p>;
+  const { sendRequest, status, data: quote, error } = useHttp(getSingleQuote, true);
+  const { quoteId } = params;
+  useEffect(() => {
+    sendRequest(quoteId);
+  }, [sendRequest])
+
+  if (status === 'pending') {
+    return (<div className='centered'>
+      <LoadingSpinner />
+    </div>
+    );
+  }
+  if (error) {
+    return (
+      <p className='focused centered'>
+        {error}
+      </p>
+    );
+  }
+  if (!quote.text) {
+    return <p className='centered'>No quote found</p>;
   }
   return (
     <Fragment>
